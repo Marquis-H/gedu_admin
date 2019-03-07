@@ -31,6 +31,10 @@ abstract class AbstractApiController extends Controller
 			'code' => 0,
 			'message' => $message,
 			'data' => $data
+		], 200, [
+			'Access-Control-Allow-Origin' => '*',
+			'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+			'Access-Control-Allow-Methods' => 'GET,HEAD,OPTIONS,POST,PUT'
 		]);
 	}
 
@@ -46,6 +50,10 @@ abstract class AbstractApiController extends Controller
 			'code' => $code,
 			'message' => $message,
 			'data' => $data
+		], 200, [
+			'Access-Control-Allow-Origin' => '*',
+			'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+			'Access-Control-Allow-Methods' => 'GET,HEAD,OPTIONS,POST,PUT'
 		]);
 	}
 
