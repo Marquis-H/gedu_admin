@@ -1,0 +1,89 @@
+api.auth:
+    prefix: /v1/auth
+    resource: '../src/Controller/Api/SecurityController.php'
+    type: annotation
+
+api.user:
+    prefix: /v1/user
+    resource: '../src/Controller/Api/UserController.php'
+    type: annotation
+
+api.role:
+    prefix: /v1/role
+    resource: '../src/Controller/Api/RoleController.php'
+    type: annotation
+
+api.group:
+    prefix: /v1/group
+    resource: '../src/Controller/Api/GroupController.php'
+    type: annotation
+
+api.setting:
+    prefix: /v1/setting
+    resource: '../src/Controller/Api/ParameterController.php'
+    type: annotation
+
+api.upload:
+    prefix: /v1/upload
+    resource: '../src/Controller/Api/UploadController.php'
+    type: annotation
+
+api.page:
+    prefix: /v1/page
+    resource: '../src/Controller/Api/PageController.php'
+    type: annotation
+
+api.campus:
+    prefix: /v1/campus
+    resource: '../src/Controller/Api/CampusController.php'
+    type: annotation
+
+api.banner:
+    prefix: /v1/banner
+    resource: '../src/Controller/Api/BannerController.php'
+    type: annotation
+
+api.content_cat:
+    prefix: /v1/content_cat
+    resource: '../src/Controller/Api/AppContentCatController.php'
+    type: annotation
+
+api.content:
+    prefix: /v1/content
+    resource: '../src/Controller/Api/AppContentController.php'
+    type: annotation
+
+api.prize:
+    prefix: /v1/prize
+    resource: '../src/Controller/Api/PrizeController.php'
+    type: annotation
+
+api.word:
+    prefix: /v1/word
+    resource: '../src/Controller/Api/WordController.php'
+    type: annotation
+
+api.app_user:
+    prefix: /v1/app_user
+    resource: '../src/Controller/Api/AppUserController.php'
+    type: annotation
+
+api.app_public:
+    prefix: /api/app/public
+    resource: '../src/Controller/App/PublicApiController.php'
+    type: annotation
+
+api.app_auth:
+    prefix: /api/app/auth
+    resource: '../src/Controller/App/AuthApiController.php'
+    type: annotation
+
+api.app_word:
+    prefix: /api/app/word
+    resource: '../src/Controller/App/WordApiController.php'
+    type: annotation
+
+api.app_profile:
+    prefix: /api/app/profile
+    resource: '../src/Controller/App/ProfileApiController.php'
+    type: annotation

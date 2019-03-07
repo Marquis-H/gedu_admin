@@ -1,0 +1,79 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    encoders:
+        Admin\Entity\BackendUser: sha512
+    providers:
+        in_memory: { memory: ~ }
+        backend_user:
+            entity:
+                class: Admin\Entity\BackendUser
+                property: username
+        app_user:
+            id: api.security.api_key_user_provider
+    firewalls:
+        admin_api_login:
+            pattern: ^/v1/auth/login
+            stateless: true
+            anonymous: true
+            provider: backend_user
+            form_login:
+                check_path: /v1/auth/login_check
+                success_handler: security.handle.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                require_previous_session: false
+                username_parameter: username
+                password_parameter: password
+
+        admin_api_public:
+            pattern: ^/v1/(auth|upload)/
+            stateless: true
+            anonymous: true
+
+        admin_api:
+            pattern: ^/v1
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+            provider: backend_user
+
+        app_api_public:
+            pattern: ^/api/app/(auth|public)/
+            stateless: true
+            anonymous: true
+
+        app_api:
+            pattern: ^/api/app
+            stateless: true
+            guard:
+                authenticator:
+                - lexik_jwt_authentication.jwt_token_authenticator
+            provider: app_user
+
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+
+            # activate different ways to authenticate
+
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+    role_hierarchy:
+        ROLE_SUPER_ADMIN:
+            - ROLE_ADMIN
+            - ROLE_USER
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/v1/auth/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1/upload/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1/api_doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1, roles: IS_AUTHENTICATED_FULLY }
+    # Api
+        - { path: ^/api/app/(auth|public)/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/app, roles: IS_AUTHENTICATED_FULLY }

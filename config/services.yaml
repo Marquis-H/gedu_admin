@@ -1,0 +1,168 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'zh'
+    domain: '%env(DOMAIN_URL)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    Admin\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    Admin\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    security.handle.authentication_success:
+        class: 'Admin\Security\Handle\AuthenticationSuccessHandle'
+        parent: Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler
+        public: true
+        autowire: true
+        autoconfigure: false
+
+    admin.event_listener.jwt:
+        class: 'Admin\EventListener\JWTEventListener'
+        arguments:
+            - "@service_container"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    admin.event_listener.jwt_invalid:
+        class: Admin\EventListener\JWTInvalidListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJWTExpired }
+        public: true
+
+    # Service
+    admin.service.user:
+        class: 'Admin\Services\UserService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.role:
+        class: 'Admin\Services\RoleService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.group:
+        class: 'Admin\Services\GroupService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.page:
+        class: 'Admin\Services\PageService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.parameter:
+        class: 'Admin\Services\ParameterService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.campus:
+        class: 'Admin\Services\CampusService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.banner:
+        class: Admin\Services\BannerService
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.content:
+        class: Admin\Services\ContentService
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.prize:
+        class: Admin\Services\PrizeService
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.word:
+        class: Admin\Services\WordService
+        arguments:
+            - "@service_container"
+        public: true
+
+    admin.service.ICIBA_parser:
+        class: Admin\Services\ICIBAParser
+        public: true
+
+    app.service.app_user:
+        class: 'Admin\Services\AppUserService'
+        arguments:
+            - "@service_container"
+        public: true
+
+    app.service.sms:
+        class: Admin\Services\SMSService
+        arguments:
+            - '%env(SUBMAIL_APPID)%'
+            - '%env(SUBMAIL_APPKEY)%'
+        public: true
+
+    paginator:
+        class: Knp\Component\Pager\Paginator
+        autowire: false
+        public: true
+
+    gedmo.listener.loggable:
+        class: Gedmo\Loggable\LoggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+    extension.listener:
+        class: Admin\EventListener\DoctrineExtensionListener
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+        tags:
+        # translatable sets locale after router processing
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
+        # loggable hooks user username if one is in security context
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    gedmo.listener.translatable:
+        class: Gedmo\Translatable\TranslatableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+            - [ setDefaultLocale, [ '%locale%' ] ]
+            - [ setTranslationFallback, [ false ] ]
+        public: true
+
+    # 小程序provide
+    api.security.api_key_user_provider:
+        class: Admin\Security\ApiKeyUserProvider
+        arguments: [ "@doctrine" ]

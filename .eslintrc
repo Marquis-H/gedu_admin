@@ -1,0 +1,28 @@
+{
+    "parser": "babel-eslint",
+    "extends": [
+        "prettier"
+    ],
+    "rules": {
+        "semi": [
+            "error",
+            "always"
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "vue/html-self-closing": "off"
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "settings": {
+        "polyfills": [
+            "fetch",
+            "promises"
+        ]
+    }
+}
