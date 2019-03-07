@@ -14,6 +14,8 @@ const codeMessage = {
     'Error': '出错！请刷新页面'
 };
 
+const domain = 'https://gedu.qidorg.com'
+
 function requestHandle(options = {}) {
     const defer = $q.defer();
 
@@ -72,6 +74,7 @@ function beforeRequest() {
 
 export default {
     post(url, params) {
+        url = domain + url;
         beforeRequest(params);
         return requestHandle({
             method: 'post',
@@ -94,6 +97,7 @@ export default {
     },
     get(url, params) {
         // console.log("url: " + url + JSON.stringify(params));
+        url = domain + url;
         beforeRequest(params);
         return requestHandle({
             mathod: 'get',
