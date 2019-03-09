@@ -1,6 +1,6 @@
 <template>
   <div class="singleImageUpload2 upload-container">
-    <el-upload class="image-uploader" drag :multiple="false" :show-file-list="false" action="/v1/upload/image"
+    <el-upload class="image-uploader" drag :multiple="false" :show-file-list="false" :action="action"
       :on-success="handleImageScucess"
       :http-request="myUpload">
       <i class="el-icon-upload"></i>
@@ -30,7 +30,8 @@ export default {
   },
   data() {
     return {
-      tempUrl: ""
+      tempUrl: "",
+      action: 'https://gedu.qidorg.com/v1/upload/image'
     };
   },
   methods: {
