@@ -33,7 +33,7 @@ abstract class AbstractApiController extends Controller
 			'data' => $data
 		], 200, [
 			'Access-Control-Allow-Origin' => '*',
-			'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+			'Access-Control-Allow-Headers' => 'Content-Type, Authorization, x-file-name',
 			'Access-Control-Allow-Methods' => 'GET,HEAD,OPTIONS,POST,PUT'
 		]);
 	}
@@ -52,7 +52,7 @@ abstract class AbstractApiController extends Controller
 			'data' => $data
 		], 200, [
 			'Access-Control-Allow-Origin' => '*',
-			'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+			'Access-Control-Allow-Headers' => 'Content-Type, Authorization, x-file-name',
 			'Access-Control-Allow-Methods' => 'GET,HEAD,OPTIONS,POST,PUT'
 		]);
 	}
