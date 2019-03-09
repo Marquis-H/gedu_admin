@@ -52,6 +52,12 @@ class Prize
 	private $integral;
 
 	/**
+	 * @ORM\ManyToOne(targetEntity="Admin\Entity\Campus", inversedBy="prizes")
+	 * @ORM\JoinColumn(nullable=false)
+	 */
+	private $Campus;
+
+	/**
 	 * @return int|null
 	 */
 	public function getId(): ?int
@@ -169,6 +175,18 @@ class Prize
 	public function setIntegral(int $integral): self
 	{
 		$this->integral = $integral;
+
+		return $this;
+	}
+
+	public function getCampus(): ?Campus
+	{
+		return $this->Campus;
+	}
+
+	public function setCampus(?Campus $Campus): self
+	{
+		$this->Campus = $Campus;
 
 		return $this;
 	}

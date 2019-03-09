@@ -39,12 +39,18 @@ class Campus
 	private $contents;
 
 	/**
+	 * @ORM\OneToMany(targetEntity="Admin\Entity\Prize", mappedBy="Campus")
+	 */
+	private $prizes;
+
+	/**
 	 * Campus constructor.
 	 */
 	public function __construct()
 	{
 		$this->user = new ArrayCollection();
 		$this->contents = new ArrayCollection();
+		$this->prizes = new ArrayCollection();
 	}
 
 	/**
@@ -157,6 +163,37 @@ class Campus
 			// set the owning side to null (unless already changed)
 			if ($content->getCampus() === $this) {
 				$content->setCampus(null);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @return Collection|Prize[]
+	 */
+	public function getPrizes(): Collection
+	{
+		return $this->prizes;
+	}
+
+	public function addPrize(Prize $prize): self
+	{
+		if (!$this->prizes->contains($prize)) {
+			$this->prizes[] = $prize;
+			$prize->setCampus($this);
+		}
+
+		return $this;
+	}
+
+	public function removePrize(Prize $prize): self
+	{
+		if ($this->prizes->contains($prize)) {
+			$this->prizes->removeElement($prize);
+			// set the owning side to null (unless already changed)
+			if ($prize->getCampus() === $this) {
+				$prize->setCampus(null);
 			}
 		}
 
