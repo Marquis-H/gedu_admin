@@ -32,11 +32,15 @@ class PrizeService
 		$accessor = PropertyAccess::createPropertyAccessor();
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		//$em->getConnection()->beginTransaction();
+		$campusRepo = $em->getRepository('Admin:Campus');
 
 		try {
 			$prize->setTitle($accessor->getValue($data, '[title]'));
 			$prize->setPhoto($accessor->getValue($data, '[photo]'));
 			$prize->setIntegral($accessor->getValue($data, '[integral]'));
+			$campusId = $accessor->getValue($data, '[campusId]');
+			$campus = $campusRepo->findOneBy(['id' => $campusId]);
+			$prize->setCampus($campus);
 
 			$em->persist($prize);
 			$em->flush();

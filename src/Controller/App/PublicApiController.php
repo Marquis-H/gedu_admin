@@ -263,11 +263,12 @@ class PublicApiController extends AbstractAppController
 		$prizes = $em->getRepository('Admin:Prize')->findAll();
 		$data = [];
 		foreach ($prizes as $prize) {
-			array_push($data, [
+			$campus = $prize->getCampus()->getTitle();
+			$data[$campus][] = [
 				'title' => $prize->getTitle(),
 				'num' => $prize->getIntegral(),
 				'photo' => $domain . $prize->getPhoto()
-			]);
+			];
 		}
 
 		return self::createSuccessJSONResponse($data, 'success');

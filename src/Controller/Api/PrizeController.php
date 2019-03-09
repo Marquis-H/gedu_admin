@@ -69,6 +69,8 @@ class PrizeController extends AbstractApiController
 				'title' => $item->getTitle(),
 				'photo' => $item->getPhoto() ? $item->getPhoto() : '',
 				'integral' => $item->getIntegral(),
+				'campus' => $item->getCampus() ? $item->getCampus()->getTitle() : '',
+				'campusId' => $item->getCampus() ? $item->getCampus()->getId() : '',
 				'updatedAt' => $item->getUpdatedAt()->format('Y-m-d H:i'),
 				'del' => false
 			]);
@@ -100,6 +102,7 @@ class PrizeController extends AbstractApiController
 				new NotBlank()
 			],
 			'photo' => [],
+			'campusId' => [],
 			'integral' => [
 				new NotBlank()
 			]
@@ -117,6 +120,7 @@ class PrizeController extends AbstractApiController
 
 				$data['id'] = $prize->getId();
 				$data['updatedAt'] = $prize->getUpdatedAt()->format('Y-m-d H:i');
+				$data['campus'] = $prize->getCampus() ? $prize->getCampus()->getTitle() : '';
 				$data['del'] = false;
 			} catch (\Exception $e) {
 				return self::createFailureJSONResponse('fail');
@@ -143,6 +147,7 @@ class PrizeController extends AbstractApiController
 		$prizeRepo = $em->getRepository('Admin:Prize');
 		$id = $accessor->getValue($data, '[id]');
 		unset($data['id']);
+		unset($data['campus']);
 		unset($data['del']);
 		unset($data['updatedAt']);
 
@@ -153,6 +158,7 @@ class PrizeController extends AbstractApiController
 					new NotBlank()
 				],
 				'photo' => [],
+				'campusId' => [],
 				'integral' => [
 					new NotBlank()
 				]
@@ -174,6 +180,7 @@ class PrizeController extends AbstractApiController
 
 				$data['id'] = $prize->getId();
 				$data['updatedAt'] = $prize->getUpdatedAt()->format('Y-m-d H:i');
+				$data['campus'] = $prize->getCampus() ? $prize->getCampus()->getTitle() : '';
 				$data['del'] = false;
 			} catch (\Exception $e) {
 				return self::createFailureJSONResponse('fail');

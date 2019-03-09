@@ -34,6 +34,12 @@
           <span>{{scope.row.integral}}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('table.campus')" align="center" min-width="150">
+        <template slot-scope="scope">
+          <span v-if="scope.row.campus">{{scope.row.campus}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('table.updatedAt')" align="center" min-width="150">
         <template slot-scope="scope">
           <span>{{scope.row.updatedAt}}</span>
@@ -105,6 +111,16 @@
         <el-form-item :label="$t('table.integral')" prop="integral">
           <el-input v-model="temp.integral" type="number"/>
         </el-form-item>
+        <el-form-item :label="$t('table.campus')" prop="campusId">
+          <el-select v-model="temp.campusId" placeholder="请选择">
+            <el-option
+              v-for="(item, index) in campus"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
@@ -126,6 +142,7 @@ import {
   updatePrize,
   deletePrize
 } from "@/api/prize";
+import { itemsCampus } from "@/api/campus";
 import { mapGetters } from "vuex";
 
 export default {
@@ -140,6 +157,7 @@ export default {
       list: null,
       total: 0,
       listLoading: false,
+      campus: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -154,7 +172,8 @@ export default {
       temp: {
         photo: "",
         title: "",
-        integral: 0
+        integral: 0,
+        campusId: ""
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -169,12 +188,20 @@ export default {
             message: this.$t("table.required"),
             trigger: "change"
           }
+        ],
+        campusId: [
+          {
+            required: true,
+            message: this.$t("table.required"),
+            trigger: "change"
+          }
         ]
       }
     };
   },
   created() {
     this.getList();
+    this.getCampus();
   },
   computed: {
     ...mapGetters(["setting"])
@@ -187,6 +214,12 @@ export default {
         this.total = res.data.pagination.total;
 
         this.listLoading = false;
+      });
+    },
+    // 校区
+    getCampus() {
+      itemsCampus().then(res => {
+        this.campus = res.data;
       });
     },
     //upload
@@ -256,6 +289,7 @@ export default {
               for (const v of this.list) {
                 if (v.id === this.temp.id) {
                   const index = this.list.indexOf(v);
+                  this.temp.campus = res.data.campus;
                   this.list.splice(index, 1, this.temp);
                   break;
                 }
