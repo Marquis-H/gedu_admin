@@ -151,7 +151,7 @@ class UserService
 				if ($dayReward + $wordIntegral > $eachDayIntegral) {
 					return false;
 				}
-				self::updateIntegral($user, $user->getInvitationCode() + $wordIntegral, $wordIntegral, $type);
+				self::updateIntegral($user, $user->getIntegral() + $wordIntegral, $wordIntegral, $type);
 		}
 
 		return true;
