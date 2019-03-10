@@ -118,10 +118,10 @@ class UserService
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$parameterRepo = $em->getRepository('Admin:BackendParameter');
-		$eachDayIntegral = $parameterRepo->findOneBy(['ck' => 'each_day_integral']);
-		$shareIntegral = $parameterRepo->findOneBy(['ck' => 'share_integral']);
-		$shareRegIntegral = $parameterRepo->findOneBy(['ck' => 'share_reg_integral']);
-		$wordIntegral = $parameterRepo->findOneBy(['ck' => 'word_integral']);
+		$eachDayIntegral = $parameterRepo->findOneBy(['ck' => 'each_day_integral'])->getParameter();
+		$shareIntegral = $parameterRepo->findOneBy(['ck' => 'share_integral'])->getParameter();
+		$shareRegIntegral = $parameterRepo->findOneBy(['ck' => 'share_reg_integral'])->getParameter();
+		$wordIntegral = $parameterRepo->findOneBy(['ck' => 'word_integral'])->getParameter();
 		// 统计今日积分
 		$infos = [Reward::SHARE_MESSAGE, Reward::SHARE_REG_MESSAGE, Reward::WORD_MESSAGE];
 		/** @var RewardLog[] $rewardLog */
