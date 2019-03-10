@@ -297,8 +297,8 @@ class WordService
 			$surplusWord = $wordUser->getSurplusWord();
 			$word = $accessor->getValue($surplusWord, '[' . $index . ']');
 			// 判断word 是否为最后一个
-			if ($word === null) {
-				return false;
+			if ($word === null && count($surplusWord) == 0) {
+				return true;
 			}
 			// 去除单词
 			array_splice($surplusWord, $index, 1);
@@ -320,13 +320,13 @@ class WordService
 
 				// 最后一个单词
 				if (count($surplusWord) == 0) {
-					return false;
+					return true;
 				}
 			} catch (\Exception $e) {
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	public function updateDaka(User $user)
