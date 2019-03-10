@@ -249,6 +249,10 @@ class WordService
 
 		$nowWord = $wordUser->getNowWord();
 		$surplusWord = $wordUser->getSurplusWord();
+		// 剩余未完成
+		if($index >= count($surplusWord)){
+			return ['again' => true];
+		}
 		$word = $surplusWord[$index];
 		$word = $em->getRepository('Admin:Word')->findOneBy(['word' => $word]);
 		$tras = [];
