@@ -10,15 +10,12 @@ namespace Admin\Services;
 
 
 use Admin\Constants\Reward;
-use Admin\Entity\RewardLog;
 use Admin\Entity\User;
 use Admin\Entity\Word;
 use Admin\Entity\WordUser;
 use Admin\Entity\WordUserLog;
-use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Util\Json;
 
 /**
  * Class WordService
@@ -130,6 +127,9 @@ class WordService
 				$wordUser->setNewWord($newWords);
 				$wordUser->setNowWord($newWords);
 				$wordUser->setSurplusWord($newWords);
+				$meWord = $wordUser->getMeWord();
+				// 记录到我的单词
+				$wordUser->setMeWord(array_merge($meWord, $newWords));
 			}
 			// 单词记录（每日）
 			$wordUserLog = new WordUserLog();
@@ -352,8 +352,8 @@ class WordService
 		$wordUserLog->setIsComplete(true);
 
 		// 记录到我的单词
-		$nowWord = $wordUser->getNowWord();
-		$wordUser->setMeWord(array_merge($wordUser->getMeWord(), $nowWord));
+		$wordUser->setNewWord([]);
+		$wordUser->setNowWord([]);
 
 		// 积分统计
 		$userService = $this->container->get('admin.service.user');
