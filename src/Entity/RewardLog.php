@@ -3,6 +3,7 @@
 namespace Admin\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="Admin\Repository\RewardLogRepository")
@@ -27,6 +28,7 @@ class RewardLog
 	private $info;
 
 	/**
+	 * @Gedmo\Timestampable(on="create")
 	 * @ORM\Column(type="datetime")
 	 */
 	private $createdAt;

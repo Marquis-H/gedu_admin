@@ -15,6 +15,7 @@ use Admin\Entity\User;
 use Admin\Entity\Word;
 use Admin\Entity\WordUser;
 use Admin\Entity\WordUserLog;
+use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Util\Json;
@@ -363,7 +364,7 @@ class WordService
 			$em->persist($wordUserLog);
 			$em->flush();
 		} catch (\Exception $e) {
-
+			throw new \LogicException($e->getMessage());
 		}
 
 		return true;
