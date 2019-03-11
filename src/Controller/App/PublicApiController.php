@@ -317,7 +317,8 @@ class PublicApiController extends AbstractAppController
 		} else {
 			// 计入积分
 			$userService = $this->get('admin.service.user');
-			$userService->isChangeIntegral($user, Reward::SHARE_MESSAGE);
+			$bindUser = $em->getRepository('Admin:User')->findOneBy(['invitationCode' => $code]);
+			$userService->isChangeIntegral($bindUser, Reward::SHARE_MESSAGE);
 
 			return self::createSuccessJSONResponse([
 				'isBind' => false
