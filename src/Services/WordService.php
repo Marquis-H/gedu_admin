@@ -119,7 +119,7 @@ class WordService
 				$allWord = $wordUser->getAllWord();
 				$newWords = [];
 				$i = $meWordNum;
-				while ($meWordNum < $this->newWordNum) {
+				while ($meWordNum < $this->newWordNum + $meWordNum) {
 					array_push($newWords, $allWord[$meWordNum]);
 					$i++;
 				}
@@ -251,7 +251,7 @@ class WordService
 		$nowWord = $wordUser->getNowWord();
 		$surplusWord = $wordUser->getSurplusWord();
 		// 剩余未完成
-		if($index >= count($surplusWord)){
+		if ($index >= count($surplusWord)) {
 			return ['again' => true];
 		}
 		$word = $surplusWord[$index];
