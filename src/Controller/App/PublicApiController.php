@@ -294,7 +294,7 @@ class PublicApiController extends AbstractAppController
 		// 检查openId是否有绑定
 		/** @var WechatBinding $wechatBind */
 		$wechatBind = $em->getRepository('Admin:WechatBinding')->findUserByOpenId($openId);
-		$user = $wechatBind->getUser();
+		$user = $wechatBind ? $wechatBind->getUser() : null;
 		if ($user) {
 			// 当前用户点击
 			if ($code === null || $user->getInvitationCode() === $code) {
