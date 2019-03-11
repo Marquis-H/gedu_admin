@@ -104,15 +104,14 @@ class WordService
 		// 查找是否有当天记录
 		$workUserLog = $wordUserLogRepo->findByDate($wordUser->getId(), $now->format('Y-m-d'));
 		if ($workUserLog === null) { // 不存在当天记录
-			// 检查昨日记录
-			$lastDate = new \Datetime(date('Y-m-d', strtotime("-1 day")));
 			/** @var WordUserLog $lastWordUserLog */
-			$lastWordUserLog = $wordUserLogRepo->findByDate($wordUser->getId(), $lastDate->format('Y-m-d'));
+			$lastWordUserLog = $wordUserLogRepo->findByLast($wordUser->getId());
 			// 上一天未完成
 			if ($lastWordUserLog->getIsComplete() == false) {
 				$lastKnownWord = $lastWordUserLog->getKnownWord();
 				// 更新wordUser
 				$wordUser->setSurplusWord(array_merge($lastKnownWord, $wordUser->getSurplusWord()));
+				$lastWordUserLog->setKnownWord([]);
 				$wordUser->setNewWord([]);
 			} else {
 				// 分配新单词
@@ -139,6 +138,7 @@ class WordService
 			try {
 				$em->persist($wordUser);
 				$em->persist($wordUserLog);
+				$em->persist($lastWordUserLog);
 				$em->flush();
 			} catch (\Exception $e) {
 				throw new \LogicException();

@@ -43,4 +43,24 @@ class WordUserLogRepository extends ServiceEntityRepository
 			->getQuery()
 			->getOneOrNullResult();
 	}
+
+	/**
+	 * @param $wordUserId
+	 * @return mixed
+	 * @throws \Doctrine\ORM\NonUniqueResultException
+	 */
+	public function findByLast($wordUserId)
+	{
+		return $this->createQueryBuilder('q')
+			->leftJoin('q.WordUser', 'w')
+			->select('q')
+			->where('w.id = :wordUserId')
+			->setParameters([
+				'wordUserId' => $wordUserId,
+			])
+			->orderBy('q.createdAt', 'desc')
+			->setMaxResults(1)
+			->getQuery()
+			->getOneOrNullResult();
+	}
 }
