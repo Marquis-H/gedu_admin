@@ -31,7 +31,7 @@ class RewardLogRepository extends ServiceEntityRepository
 	public function findLogByDay($day, $infos)
 	{
 		return $this->createQueryBuilder('q')
-			->select('q.integral')
+			->select('q')
 			->where('q.info IN (:infos)')
 			->andWhere('q.createdAt LIKE :day')
 			->setParameters([
