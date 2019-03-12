@@ -98,6 +98,9 @@ class AppUserService
 		$mobile = $accessor->getValue($data, '[mobile]');
 		$campusId = $accessor->getValue($data, '[campusId]');
 		$inviteCode = $accessor->getValue($data, '[inviteCode]');
+		// log
+		$log = $this->container->get('logger');
+		$log->addInfo('绑定信息', $data);
 
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$user = $em->getRepository('Admin:User')->findOneBy(['phone' => $mobile]);
