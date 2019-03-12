@@ -9,6 +9,7 @@
 namespace Admin\Services;
 
 
+use Admin\Constants\Reward;
 use Admin\Entity\User;
 use Admin\Entity\WechatBinding;
 use Predis\Client;
@@ -96,6 +97,7 @@ class AppUserService
 		$openId = $accessor->getValue($data, '[openId]');
 		$mobile = $accessor->getValue($data, '[mobile]');
 		$campusId = $accessor->getValue($data, '[campusId]');
+		$inviteCode = $accessor->getValue($data, '[inviteCode]');
 
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$user = $em->getRepository('Admin:User')->findOneBy(['phone' => $mobile]);
@@ -115,6 +117,13 @@ class AppUserService
 		$wechatBind = new WechatBinding();
 		$wechatBind->setOpenid($openId);
 		$user->setWechatBinding($wechatBind);
+
+		//绑定后，邀请人获取积分
+		$bindUser = $em->getRepository('Admin:User')->findOneBy(['invitationCode' => $inviteCode]);
+		if($bindUser){
+			$userService = $this->container->get('admin.service.user');
+			$userService->isChangeIntegral($bindUser, Reward::SHARE_REG_MESSAGE);
+		}
 
 		try {
 			$em->persist($user);
