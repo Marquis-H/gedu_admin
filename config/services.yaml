@@ -166,3 +166,7 @@ services:
     api.security.api_key_user_provider:
         class: Admin\Security\ApiKeyUserProvider
         arguments: [ "@doctrine" ]
+
+    monolog.logger.public:
+        alias: monolog.logger
+        public: true

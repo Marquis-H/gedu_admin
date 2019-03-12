@@ -99,7 +99,7 @@ class AppUserService
 		$campusId = $accessor->getValue($data, '[campusId]');
 		$inviteCode = $accessor->getValue($data, '[inviteCode]');
 		// log
-		$log = $this->container->get('monolog.logger');
+		$log = $this->container->get('monolog.logger.public');
 		$log->info('绑定信息', $data);
 
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
