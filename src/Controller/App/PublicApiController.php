@@ -321,6 +321,7 @@ class PublicApiController extends AbstractAppController
 			$userService->isChangeIntegral($bindUser, Reward::SHARE_MESSAGE);
 
 			return self::createSuccessJSONResponse([
+				'code' => $bindUser->getInvitationCode(),
 				'isBind' => false
 			]);
 		}
