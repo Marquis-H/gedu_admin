@@ -125,7 +125,7 @@ class UserService
 		// 统计今日积分
 		$infos = [Reward::SHARE_MESSAGE, Reward::SHARE_REG_MESSAGE, Reward::WORD_MESSAGE];
 		/** @var RewardLog[] $rewardLog */
-		$rewardLog = $em->getRepository('Admin:RewardLog')->findLogByDay(new \DateTime(), $infos);
+		$rewardLog = $em->getRepository('Admin:RewardLog')->findLogByDay((new \DateTime())->format('Y-m-d'), $infos);
 		$dayReward = 0;
 		foreach ($rewardLog as $value) {
 			$dayReward = $dayReward + $value->getIntegral();

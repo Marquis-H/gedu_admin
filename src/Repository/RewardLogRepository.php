@@ -33,10 +33,10 @@ class RewardLogRepository extends ServiceEntityRepository
 		return $this->createQueryBuilder('q')
 			->select('q.integral')
 			->where('q.info IN (:infos)')
-			->andWhere('q.createdAt = :day')
+			->andWhere('q.createdAt LIKE :day')
 			->setParameters([
 				'infos' => $infos,
-				'day' => $day
+				'day' => '%' . $day . '%'
 			])
 			->getQuery()
 			->getResult();
