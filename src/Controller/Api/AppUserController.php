@@ -71,7 +71,7 @@ class AppUserController extends AbstractApiController
 			array_push($items, [
 				'id' => $item->getId(),
 				'name' => $item->getName(),
-				'gender' => $item->getGender(),
+				'gender' => $item->getGender() ? $item->getGender() : '-',
 				'birthday' => $item->getBirthday() ? $item->getBirthday()->format('Y-m-d') : '-',
 				'phone' => $item->getPhone(),
 				'isMember' => $item->getIsMember(),
