@@ -108,13 +108,29 @@ class PublicApiController extends AbstractAppController
 	public function banner(Request $request)
 	{
 		$em = $this->get('doctrine.orm.default_entity_manager');
+		$openId = $request->query->get('openId');
 		$type = $request->query->get('type');
+		$wechatBindRepo = $em->getRepository('Admin:WechatBinding');
 		$banners = $em->getRepository('Admin:Banner')->findBy(['slug' => $type ? $type : $this->homeBannerSlug]);
 
 		$domain = $this->getParameter('domain');
 		$data = [];
 		foreach ($banners as $banner) {
-			array_push($data, $domain . $banner->getPhoto());
+			$user = null;
+			if ($openId) {
+				/** @var WechatBinding $wechatBind */
+				$wechatBind = $wechatBindRepo->findUserByOpenId($openId);
+				/** @var User $user */
+				$user = $wechatBind ? $wechatBind->getUser() : null;
+			}
+			if ($user) {
+				$campus = $user->getCampus();
+				if ($campus->getId() === $banner->getCampus()->getId()) {
+					array_push($data, $domain . $banner->getPhoto());
+				}
+			} else {
+				array_push($data, $domain . $banner->getPhoto());
+			}
 		}
 
 		return self::createSuccessJSONResponse($data, 'success');

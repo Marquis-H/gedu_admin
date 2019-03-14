@@ -214,13 +214,6 @@ export default {
             trigger: "change"
           }
         ],
-        campusId: [
-          {
-            required: true,
-            message: this.$t("table.required"),
-            trigger: "change"
-          }
-        ]
       }
     };
   },
@@ -316,6 +309,7 @@ export default {
               for (const v of this.list) {
                 if (v.id === this.temp.id) {
                   const index = this.list.indexOf(v);
+                  this.temp.campus = res.data.campus;
                   this.list.splice(index, 1, this.temp);
                   break;
                 }
