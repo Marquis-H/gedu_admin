@@ -46,6 +46,12 @@
           <span>{{scope.row.position}}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('table.campus')" align="center" min-width="150">
+        <template slot-scope="scope">
+          <span v-if="scope.row.campus">{{scope.row.campus}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column
         :label="$t('table.actions')"
         align="center"
@@ -130,6 +136,16 @@
         <el-form-item :label="$t('table.position')" prop="position">
           <el-input v-model="temp.position" type="number"/>
         </el-form-item>
+        <el-form-item :label="$t('table.campus')" prop="campusId">
+          <el-select v-model="temp.campusId" placeholder="请选择">
+            <el-option
+              v-for="(item, index) in campus"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
@@ -151,6 +167,7 @@ import {
   updateBanner,
   deleteBanner
 } from "@/api/banner";
+import { itemsCampus } from "@/api/campus";
 import { mapGetters } from "vuex";
 
 export default {
@@ -180,7 +197,8 @@ export default {
         photo: "",
         onlineAt: "",
         offlineAt: "",
-        position: 0
+        position: 0,
+        campusId: ""
       },
       dialogFormVisible: false,
       dialogStatus: "",
@@ -195,12 +213,20 @@ export default {
             message: this.$t("table.required"),
             trigger: "change"
           }
+        ],
+        campusId: [
+          {
+            required: true,
+            message: this.$t("table.required"),
+            trigger: "change"
+          }
         ]
       }
     };
   },
   created() {
     this.getList();
+    this.getCampus();
   },
   computed: {
     ...mapGetters(["setting"])
@@ -213,6 +239,12 @@ export default {
         this.total = res.data.pagination.total;
 
         this.listLoading = false;
+      });
+    },
+    // 校区
+    getCampus() {
+      itemsCampus().then(res => {
+        this.campus = res.data;
       });
     },
     //upload

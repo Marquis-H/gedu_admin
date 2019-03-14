@@ -42,6 +42,11 @@ class Banner
 	private $slug;
 
 	/**
+	 * @ORM\ManyToOne(targetEntity="Admin\Entity\Campus")
+	 */
+	private $Campus;
+
+	/**
 	 * @return int|null
 	 */
 	public function getId(): ?int
@@ -140,6 +145,25 @@ class Banner
 	public function setSlug(?string $slug): self
 	{
 		$this->slug = $slug;
+
+		return $this;
+	}
+
+	/**
+	 * @return Campus|null
+	 */
+	public function getCampus(): ?Campus
+	{
+		return $this->Campus;
+	}
+
+	/**
+	 * @param Campus|null $Campus
+	 * @return Banner
+	 */
+	public function setCampus(?Campus $Campus): self
+	{
+		$this->Campus = $Campus;
 
 		return $this;
 	}

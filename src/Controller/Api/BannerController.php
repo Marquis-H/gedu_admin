@@ -70,6 +70,8 @@ class BannerController extends AbstractApiController
 				'offlineAt' => $item->getOfflineAt() ? $item->getOfflineAt()->format('Y-m-d H:i') : '',
 				'position' => $item->getPosition(),
 				'slug' => $item->getSlug(),
+				'campus' => $item->getCampus() ? $item->getCampus()->getTitle() : '-',
+				'campusId' => $item->getCampus() ? $item->getCampus()->getId() : '',
 				'del' => false
 			]);
 		}
@@ -98,6 +100,9 @@ class BannerController extends AbstractApiController
 			'photo' => [
 				new NotBlank()
 			],
+			'campusId' => [
+				new NotBlank()
+			],
 			'onlineAt' => [],
 			'offlineAt' => [],
 			'position' => [],
@@ -115,6 +120,7 @@ class BannerController extends AbstractApiController
 				$banner = $bannerService->save($banner, $data);
 
 				$data['id'] = $banner->getId();
+				$data['campus'] = $banner->getCampus() ? $banner->getCampus()->getTitle() : '-';
 				$data['del'] = false;
 			} catch (\Exception $e) {
 				return self::createFailureJSONResponse('fail');
@@ -141,12 +147,16 @@ class BannerController extends AbstractApiController
 		$bannerRepo = $em->getRepository('Admin:Banner');
 		$id = $accessor->getValue($data, '[id]');
 		unset($data['id']);
+		unset($data['campus']);
 		unset($data['del']);
 
 		$validator = $this->get('validator');
 		$collectionConstraint = new Collection(
 			[
 				'photo' => [
+					new NotBlank()
+				],
+				'campusId' => [
 					new NotBlank()
 				],
 				'onlineAt' => [],
@@ -167,8 +177,10 @@ class BannerController extends AbstractApiController
 					return self::createFailureJSONResponse('fail');
 				}
 				/** @var Banner $banner */
-				$bannerService->save($banner, $data);
+				$banner = $bannerService->save($banner, $data);
 
+				$data['id'] = $banner->getId();
+				$data['campus'] = $banner->getCampus() ? $banner->getCampus()->getTitle() : '-';
 			} catch (\Exception $e) {
 				return self::createFailureJSONResponse('fail');
 			}

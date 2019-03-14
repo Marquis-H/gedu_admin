@@ -42,7 +42,10 @@ class BannerService
 			$banner->setOfflineAt($offlineAt);
 			$banner->setPosition($accessor->getValue($data, '[position]'));
 			$banner->setSlug($accessor->getValue($data, '[slug]'));
-
+			//保存校区
+			$campusId = $accessor->getValue($data, '[campusId]');
+			$campus = $em->getRepository('Admin:Campus')->findOneBy(['id' => $campusId]);
+			$banner->setCampus($campus);
 			$em->persist($banner);
 			$em->flush();
 
