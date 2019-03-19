@@ -110,7 +110,9 @@ class PublicApiController extends AbstractAppController
 		$em = $this->get('doctrine.orm.default_entity_manager');
 		$openId = $request->query->get('openId');
 		$type = $request->query->get('type');
+		$code = $request->query->get('code');
 		$wechatBindRepo = $em->getRepository('Admin:WechatBinding');
+		$userRepo = $em->getRepository('Admin:User');
 		$banners = $em->getRepository('Admin:Banner')->findBy(['slug' => $type ? $type : $this->homeBannerSlug]);
 
 		$domain = $this->getParameter('domain');
@@ -120,8 +122,11 @@ class PublicApiController extends AbstractAppController
 			if ($openId) {
 				/** @var WechatBinding $wechatBind */
 				$wechatBind = $wechatBindRepo->findUserByOpenId($openId);
-				/** @var User $user */
-				$user = $wechatBind ? $wechatBind->getUser() : null;
+				if ($wechatBind) {
+					$user = $wechatBind->getUser();
+				} else if ($code) {
+					$user = $userRepo->findOneBy(['invitationCode' => $code]);
+				}
 			}
 			if ($user) {
 				$campus = $user->getCampus();
