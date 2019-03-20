@@ -16,6 +16,10 @@ export const constantRouterMap = [
         hidden: true
     },
     {
+        path: '/logout',
+        redirect: '/login'
+    },
+    {
         path: '/404',
         component: () => import('@/views/error-page/404'),
         hidden: true
