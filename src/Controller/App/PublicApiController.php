@@ -356,6 +356,23 @@ class PublicApiController extends AbstractAppController
 	}
 
 	/**
+	 * 获取活动规则
+	 *
+	 * @Route("/share/tips", name="app.share.tips")
+	 * @Method({"GET"})
+	 *
+	 * @return \Symfony\Component\HttpFoundation\JsonResponse
+	 */
+	public function getShareTips()
+	{
+		$em = $this->get('doctrine.orm.default_entity_manager');
+		$parameterRepo = $em->getRepository('Admin:BackendParameter');
+		$tips = $parameterRepo->findOneBy(['ck' => 'shate_tips'])->getParameter();
+
+		return self::createSuccessJSONResponse(['tips' => $tips]);
+	}
+
+	/**
 	 * 通过code解析出openId
 	 *
 	 * @param $code

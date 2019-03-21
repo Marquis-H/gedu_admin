@@ -69,6 +69,14 @@
             :closable="false"
           ></el-alert>
         </el-form-item>
+        <el-form-item label-width="120px" label="分享活动规则">
+          <el-input
+            v-model="formData.shate_tips"
+            :rows="8"
+            type="textarea"
+            placeholder="请输入分享活动规则"
+          />
+        </el-form-item>
         <el-button type="primary" icon="el-icon-document" @click="submit">{{$t('form.save')}}</el-button>
       </div>
     </el-form>
@@ -94,7 +102,8 @@ export default {
         share_integral: 0,
         share_reg_integral: 0,
         each_day_integral: 0,
-        word_integral: 0
+        word_integral: 0,
+        shate_tips: ''
       },
       loading: false,
       listQuery: {
