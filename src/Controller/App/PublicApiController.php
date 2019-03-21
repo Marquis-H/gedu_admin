@@ -257,10 +257,14 @@ class PublicApiController extends AbstractAppController
 		];
 		switch ($type) {
 			case 'campus': // 校区的额外信息
-				$extra = explode('|', $content->getExtra());
-				$data['phone'] = $accessor->getValue($extra, '[0]');
-				$data['address'] = $accessor->getValue($extra, '[1]');
-				$data['map'] = $accessor->getValue($extra, '[2]');
+				$extraData = explode(',', $content->getExtra());
+				foreach ($extraData as $value) {
+					$extra = explode('|', $value);
+					$data[]['title'] = $accessor->getValue($extra, '[0]');
+					$data[]['phone'] = $accessor->getValue($extra, '[1]');
+					$data[]['address'] = $accessor->getValue($extra, '[2]');
+					$data[]['map'] = $accessor->getValue($extra, '[3]');
+				}
 				break;
 		}
 
