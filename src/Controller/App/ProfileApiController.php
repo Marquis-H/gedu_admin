@@ -45,7 +45,7 @@ class ProfileApiController extends AbstractAppController
 			'nickname' => $user->getNickname(),
 			'name' => $user->getName(),
 			'gender' => $user->getGender(),
-			'birthday' => $user->getBirthday() ? $user->getBirthday()->format('Y-m-d') : null,
+			'birthday' => $user->getBirthday() ? $user->getBirthday()->getTimestamp() : null,
 			'phone' => $user->getPhone(),
 			'campus' => $user->getCampus()->getTitle(),
 			'code' => $user->getInvitationCode(),
