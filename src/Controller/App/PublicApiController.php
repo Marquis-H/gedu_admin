@@ -10,6 +10,7 @@ namespace Admin\Controller\App;
 
 use Admin\Constants\Code;
 use Admin\Constants\Reward;
+use Admin\Entity\Campus;
 use Admin\Entity\Content;
 use Admin\Entity\User;
 use Admin\Entity\WechatBinding;
@@ -287,16 +288,21 @@ class PublicApiController extends AbstractAppController
 	{
 		$domain = $this->getParameter('domain');
 		$em = $this->get('doctrine.orm.default_entity_manager');
+		/** @var User $user */
+		$user = $this->getUser();
+		$userCampus = $user->getCampus();
 
 		$prizes = $em->getRepository('Admin:Prize')->findAll();
 		$data = [];
 		foreach ($prizes as $prize) {
 			$campus = $prize->getCampus()->getTitle();
-			$data[$campus][] = [
-				'title' => $prize->getTitle(),
-				'num' => $prize->getIntegral(),
-				'photo' => $domain . $prize->getPhoto()
-			];
+			if($userCampus = $campus){
+				$data[$campus][] = [
+					'title' => $prize->getTitle(),
+					'num' => $prize->getIntegral(),
+					'photo' => $domain . $prize->getPhoto()
+				];
+			}
 		}
 
 		return self::createSuccessJSONResponse($data, 'success');

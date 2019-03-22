@@ -119,7 +119,7 @@ class UserService
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$parameterRepo = $em->getRepository('Admin:BackendParameter');
 		$eachDayIntegral = $parameterRepo->findOneBy(['ck' => 'each_day_integral'])->getParameter();
-		$eachDayIntegral = explode($eachDayIntegral, '|');
+		$eachDayIntegral = explode('|', $eachDayIntegral);
 		$shareIntegral = $parameterRepo->findOneBy(['ck' => 'share_integral'])->getParameter();
 		$shareRegIntegral = $parameterRepo->findOneBy(['ck' => 'share_reg_integral'])->getParameter();
 		$wordIntegral = $parameterRepo->findOneBy(['ck' => 'word_integral'])->getParameter();
