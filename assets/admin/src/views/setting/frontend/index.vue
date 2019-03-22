@@ -61,7 +61,7 @@
           <el-input v-model="formData.word_integral" type="number" class="input" autosize/>
         </el-form-item>
         <el-form-item label-width="120px" label="每天积分上限">
-          <el-input v-model="formData.each_day_integral" type="number" class="input" autosize/>
+          <el-input v-model="formData.each_day_integral" class="input" autosize/>
           <el-alert
             title="分享积分上限|分享注册积分上限|单词打卡积分上限|单词打卡满30天积分上限"
             type="success"
