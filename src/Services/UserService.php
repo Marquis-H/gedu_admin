@@ -119,6 +119,7 @@ class UserService
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$parameterRepo = $em->getRepository('Admin:BackendParameter');
 		$eachDayIntegral = $parameterRepo->findOneBy(['ck' => 'each_day_integral'])->getParameter();
+		$eachDayIntegral = explode($eachDayIntegral, '|');
 		$shareIntegral = $parameterRepo->findOneBy(['ck' => 'share_integral'])->getParameter();
 		$shareRegIntegral = $parameterRepo->findOneBy(['ck' => 'share_reg_integral'])->getParameter();
 		$wordIntegral = $parameterRepo->findOneBy(['ck' => 'word_integral'])->getParameter();
@@ -126,29 +127,41 @@ class UserService
 		$infos = [Reward::SHARE_MESSAGE, Reward::SHARE_REG_MESSAGE, Reward::WORD_MESSAGE];
 		/** @var RewardLog[] $rewardLog */
 		$rewardLog = $em->getRepository('Admin:RewardLog')->findLogByDay((new \DateTime())->format('Y-m-d'), $infos);
-		$dayReward = 0;
+		$dayRewardShare = 0;
+		$dayRewardReg = 0;
+		$dayRewardWord = 0;
 		foreach ($rewardLog as $value) {
-			$dayReward = $dayReward + $value->getIntegral();
+			switch ($value->getInfo()){
+				case Reward::SHARE_MESSAGE:
+					$dayRewardShare = $dayRewardShare + $value->getIntegral();
+					break;
+				case Reward::SHARE_REG_MESSAGE:
+					$dayRewardReg = $dayRewardReg + $value->getIntegral();
+					break;
+				case Reward::WORD_MESSAGE:
+					$dayRewardWord = $dayRewardWord + $value->getIntegral();
+					break;
+			}
 		}
 
 		switch ($type) {
 			case Reward::SHARE_MESSAGE:
 				// 积分大于上限
-				if ($dayReward + $shareIntegral > $eachDayIntegral) {
+				if ($dayRewardShare + $shareIntegral > $eachDayIntegral[0]) {
 					return false;
 				}
 				self::updateIntegral($user, $user->getIntegral() + $shareIntegral, $shareIntegral, $type);
 				break;
 			case Reward::SHARE_REG_MESSAGE:
 				// 积分大于上限
-				if ($dayReward + $shareRegIntegral > $eachDayIntegral) {
+				if ($dayRewardReg + $shareRegIntegral > $eachDayIntegral[1]) {
 					return false;
 				}
 				self::updateIntegral($user, $user->getIntegral() + $shareRegIntegral, $shareRegIntegral, $type);
 				break;
 			case Reward::WORD_MESSAGE:
 				// 单词打卡
-				if ($dayReward + $wordIntegral > $eachDayIntegral) {
+				if ($dayRewardWord + $wordIntegral > $eachDayIntegral[2]) {
 					return false;
 				}
 				self::updateIntegral($user, $user->getIntegral() + $wordIntegral, $wordIntegral, $type);
