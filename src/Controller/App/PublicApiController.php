@@ -288,15 +288,30 @@ class PublicApiController extends AbstractAppController
 	{
 		$domain = $this->getParameter('domain');
 		$em = $this->get('doctrine.orm.default_entity_manager');
-		/** @var User $user */
-		$user = $this->getUser();
-		$userCampus = $user->getCampus();
+		$openId = $request->query->get('openId');
 
 		$prizes = $em->getRepository('Admin:Prize')->findAll();
+		$wechatBindRepo = $em->getRepository('Admin:WechatBinding');
 		$data = [];
 		foreach ($prizes as $prize) {
+			$user = null;
 			$campus = $prize->getCampus()->getTitle();
-			if($userCampus = $campus){
+			if ($openId) {
+				/** @var WechatBinding $wechatBind */
+				$wechatBind = $wechatBindRepo->findUserByOpenId($openId);
+				/** @var User $user */
+				$user = $wechatBind ? $wechatBind->getUser() : null;
+			}
+			if ($user) {
+				$userCampus = $user->getCampus();
+				if ($userCampus == $campus) {
+					$data[$campus][] = [
+						'title' => $prize->getTitle(),
+						'num' => $prize->getIntegral(),
+						'photo' => $domain . $prize->getPhoto()
+					];
+				}
+			} else {
 				$data[$campus][] = [
 					'title' => $prize->getTitle(),
 					'num' => $prize->getIntegral(),
