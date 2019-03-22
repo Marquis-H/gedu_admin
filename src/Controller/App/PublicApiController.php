@@ -304,7 +304,7 @@ class PublicApiController extends AbstractAppController
 			}
 			if ($user) {
 				$userCampus = $user->getCampus();
-				if ($userCampus == $campus) {
+				if ($userCampus->getTitle() == $campus) {
 					$data[$campus][] = [
 						'title' => $prize->getTitle(),
 						'num' => $prize->getIntegral(),
