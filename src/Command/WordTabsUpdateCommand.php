@@ -32,20 +32,22 @@ class WordTabsUpdateCommand extends ContainerAwareCommand
 		$dataPath = $this->getContainer()->get('kernel')->getRootDir() . '/../data/';
 		$row = 1;
 		$conn = $this->getContainer()->get('doctrine.dbal.default_connection');
-		if (($handle = fopen($dataPath . "toefl.csv", "r")) !== FALSE) {
+		if (($handle = fopen($dataPath . "six.csv", "r")) !== FALSE) {
 			while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 				$row++;
 				$word = $data[0];
 				try {
 					$words = $conn->fetchAll('select * from word where word = \'' . $word . '\'');
-					$tabs = $words[0]['tabs'];
-					$tabs = unserialize($tabs);
-					if (!in_array('toefl', $tabs)) {
-						array_push($tabs, 'toefl');
-						$conn->update('word', [
-							'tabs' => serialize($tabs),
-						], ['word' => $word]);
-						$output->writeln('<info>' . $word . '</info>');
+					if($words){
+						$tabs = $words[0]['tabs'];
+						$tabs = unserialize($tabs);
+						if (!in_array('six', $tabs)) {
+							array_push($tabs, 'six');
+							$conn->update('word', [
+								'tabs' => serialize($tabs),
+							], ['word' => $word]);
+							$output->writeln('<info>' . $word . '</info>');
+						}
 					}
 				} catch (\Exception $e) {
 					$output->writeln("<error>" . $word . "</error>");

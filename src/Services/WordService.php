@@ -26,7 +26,7 @@ class WordService
 	/**
 	 * @var int
 	 */
-	protected $newWordNum = 80;
+	protected $newWordNum = 50;
 
 	/** @var ContainerInterface */
 	private $container;
