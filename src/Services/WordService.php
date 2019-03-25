@@ -334,6 +334,12 @@ class WordService
 		return false;
 	}
 
+	/**
+	 * 打卡
+	 *
+	 * @param User $user
+	 * @return bool
+	 */
 	public function updateDaka(User $user)
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');

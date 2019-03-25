@@ -49,7 +49,8 @@ class ProfileApiController extends AbstractAppController
 			'phone' => $user->getPhone(),
 			'campus' => $user->getCampus()->getTitle(),
 			'code' => $user->getInvitationCode(),
-			'static' => $static
+			'static' => $static,
+			'wordType' => $user->getWordType()
 		], 'success');
 	}
 

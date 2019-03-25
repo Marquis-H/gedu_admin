@@ -110,6 +110,11 @@ class User implements UserInterface
 	private $wordUsers;
 
 	/**
+	 * @ORM\Column(type="string", length=255, nullable=true)
+	 */
+	private $wordType;
+
+	/**
 	 * @return array
 	 */
 	public function getRoles()
@@ -493,6 +498,18 @@ class User implements UserInterface
 				$wordUser->setUser(null);
 			}
 		}
+
+		return $this;
+	}
+
+	public function getWordType(): ?string
+	{
+		return $this->wordType;
+	}
+
+	public function setWordType(?string $wordType): self
+	{
+		$this->wordType = $wordType;
 
 		return $this;
 	}
