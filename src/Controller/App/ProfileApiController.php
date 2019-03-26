@@ -86,6 +86,15 @@ class ProfileApiController extends AbstractAppController
 			case 'birthday':
 				$profile->setBirthday(new \DateTime($accessor->getValue($postData, '[birthday]')));
 				break;
+			case 'wordType':
+				$wordType = $accessor->getValue($postData, '[wordType]');
+				$profile->setWordType($wordType);
+				// 单词打卡记录
+				$wordService = $this->get('admin.service.word');
+				$isWordUserType = $wordService->isWordUserType($profile);
+				if($isWordUserType === false){
+					$wordService->saveRecord($profile, ['type' => $wordType]);
+				}
 		}
 
 		try {
@@ -96,6 +105,6 @@ class ProfileApiController extends AbstractAppController
 			return self::createFailureJSONResponse('error');
 		}
 
-		return self::createSuccessJSONResponse([], 'success');
+		return self::createSuccessJSONResponse([], '更新成功');
 	}
 }

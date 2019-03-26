@@ -84,6 +84,23 @@ class WordService
 	}
 
 	/**
+	 * 判断用户所选单词类型是否存在
+	 *
+	 * @param User $user
+	 * @return bool
+	 */
+	public function isWordUserType(User $user)
+	{
+		$em = $this->container->get('doctrine.orm.default_entity_manager');
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'type' => $user->getWordType()]);
+		if ($wordUser === null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * 获取单词数据
 	 *
 	 * @param User $user
@@ -93,7 +110,7 @@ class WordService
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		/** @var WordUser $wordUser */
-		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'isSelect' => true]);
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'type' => $user->getWordType()]);
 		if ($wordUser === null) {
 			return [];
 		}
@@ -200,9 +217,13 @@ class WordService
 		$wordUserLog->setIsComplete(false);
 		$wordUserLog->setKnownWord([]);
 		$wordUserLog->setWordUser($wordUser);
+
+		// 记录所选类别
+		$user->setWordType($type);
 		try {
 			$em->persist($wordUser);
 			$em->persist($wordUserLog);
+			$em->persist($user);
 			$em->flush();
 		} catch (\Exception $e) {
 			throw new \LogicException();
@@ -227,7 +248,7 @@ class WordService
 	public function getWordInfo(User $user, $index, $isKnown)
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
-		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'isSelect' => true]);
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'type' => $user->getWordType()]);
 		// 已存在改类型单词本
 		if ($wordUser === null) {
 			return false;
@@ -289,7 +310,7 @@ class WordService
 	{
 		$accessor = PropertyAccess::createPropertyAccessor();
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
-		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'isSelect' => true]);
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'type' => $user->getWordType()]);
 		// 已存在改类型单词本
 		if ($wordUser === null) {
 			return false;
@@ -343,7 +364,7 @@ class WordService
 	public function updateDaka(User $user)
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
-		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'isSelect' => true]);
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'type' => $user->getWordType()]);
 		// 已存在改类型单词本
 		if ($wordUser === null) {
 			return false;
@@ -374,6 +395,24 @@ class WordService
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param User $user
+	 * @return array
+	 */
+	public function shareStaticData(User $user)
+	{
+		$em = $this->container->get('doctrine.orm.default_entity_manager');
+		/** @var WordUser $wordUser */
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['User' => $user, 'type' => $user->getWordType()]);
+		// 已存在改类型单词本
+		if ($wordUser === null) {
+			return ['day' => 0, 'word' => 0];
+		}
+		$log = $wordUser->getWordUserLogs()->getKeys();
+
+		return ['day' => count($log), 'word' => count($wordUser->getMeWord())];
 	}
 
 	/**

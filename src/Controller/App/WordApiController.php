@@ -9,10 +9,10 @@
 namespace Admin\Controller\App;
 
 
+use Admin\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Util\Json;
 
 /**
@@ -33,7 +33,9 @@ class WordApiController extends AbstractAppController
 	public function info(Request $request)
 	{
 		$wordService = $this->get('admin.service.word');
+		/** @var User $user */
 		$user = $this->getUser();
+		$workType = ['ielts' => '雅思', 'toefl' => "托福", 'four' => '四级', 'six' => "六级", 'gre' => 'GRE', 'gmat' => 'GMAT'];
 
 		// 是否有选择单词类型
 		$isRecord = $wordService->isRecord($user);
@@ -50,6 +52,7 @@ class WordApiController extends AbstractAppController
 		$record = $wordService->recordInfo($user);
 		return self::createSuccessJSONResponse([
 			'info' => $record,
+			'wordType' => $workType[$user->getWordType()],
 			'isRecord' => true
 		]);
 	}
@@ -140,13 +143,26 @@ class WordApiController extends AbstractAppController
 	 */
 	public function dakaWord(Request $request)
 	{
+		/** @var User $user */
 		$user = $this->getUser();
+		$domain = $this->getParameter('domain');
 
 		$wordService = $this->get('admin.service.word');
 		try {
 			$isComplete = $wordService->updateDaka($user);
+			$static = $wordService->shareStaticData($user);
 
-			return self::createSuccessJSONResponse(['isComplete' => $isComplete]);
+			// 分享图片的数据
+			$shareData = [
+				'avatar' => $user->getAvatar(),
+				'nickname' => $user->getNickname(),
+				'day' => $static['day'], // TODO 打卡累计天数
+				'word' => $static['word'], // TODO 打卡的单词
+				'shareImg' => $domain . '/images/share.jpeg',
+				'type' => $user->getWordType()
+			];
+
+			return self::createSuccessJSONResponse(['isComplete' => $isComplete, 'shareData' => $shareData]);
 		} catch (\Exception $e) {
 			return self::createFailureJSONResponse('无法更新');
 		}
