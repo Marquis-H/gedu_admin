@@ -410,9 +410,9 @@ class WordService
 		if ($wordUser === null) {
 			return ['day' => 0, 'word' => 0];
 		}
-		$log = $wordUser->getWordUserLogs()->getKeys();
+		$log = $em->getRepository('Admin:WordUserLog')->findBy(['WordUser' => $wordUser, 'isComplete' => true]);
 
-		return ['day' => count($log), 'word' => count($wordUser->getMeWord())];
+		return ['day' => count($log), 'word' => count($wordUser->getMeWord()) - $this->newWordNum];
 	}
 
 	/**
