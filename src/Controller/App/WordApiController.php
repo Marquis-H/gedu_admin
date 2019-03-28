@@ -149,7 +149,7 @@ class WordApiController extends AbstractAppController
 
 		$wordService = $this->get('admin.service.word');
 		try {
-//			$isComplete = $wordService->updateDaka($user);
+			$isComplete = $wordService->updateDaka($user);
 			$static = $wordService->shareStaticData($user);
 
 			// 分享图片的数据
@@ -162,7 +162,7 @@ class WordApiController extends AbstractAppController
 				'type' => $user->getWordType()
 			];
 
-			return self::createSuccessJSONResponse(['isComplete' => true, 'shareData' => $shareData]);
+			return self::createSuccessJSONResponse(['isComplete' => $isComplete, 'shareData' => $shareData]);
 		} catch (\Exception $e) {
 			return self::createFailureJSONResponse('无法更新');
 		}
