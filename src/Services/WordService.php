@@ -412,7 +412,7 @@ class WordService
 		}
 		$log = $em->getRepository('Admin:WordUserLog')->findBy(['WordUser' => $wordUser, 'isComplete' => true]);
 
-		return ['day' => count($log), 'word' => count($wordUser->getMeWord()) - $this->newWordNum];
+		return ['day' => count($log), 'word' => count($wordUser->getMeWord())];
 	}
 
 	/**
