@@ -19,32 +19,23 @@ class VoiceCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, VoiceCategory::class);
     }
 
-//    /**
-//     * @return VoiceCategory[] Returns an array of VoiceCategory objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+	/**
+	 * 检查是否有重复
+	 *
+	 * @param $title
+	 * @param $id
+	 * @return int
+	 */
+	public function isUnique($title, $id)
+	{
+		$result = $this->createQueryBuilder('q')
+			->select('q')
+			->where('q.id != :id')
+			->andWhere('q.name = :name')
+			->setParameters(['id' => $id, 'name' => $title])
+			->getQuery()
+			->getResult();
 
-    /*
-    public function findOneBySomeField($value): ?VoiceCategory
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+		return count($result);
+	}
 }

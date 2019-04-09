@@ -117,6 +117,12 @@ services:
         class: Admin\Services\ICIBAParser
         public: true
 
+    admin.service.voice:
+        class: 'Admin\Services\VoiceService'
+        arguments:
+        - "@service_container"
+        public: true
+
     app.service.app_user:
         class: 'Admin\Services\AppUserService'
         arguments:

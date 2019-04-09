@@ -63,6 +63,16 @@ api.word:
     resource: '../src/Controller/Api/WordController.php'
     type: annotation
 
+api.voice_cat:
+    prefix: /v1/voice_cat
+    resource: '../src/Controller/Api/VoiceCatController.php'
+    type: annotation
+
+api.voice:
+    prefix: /v1/voice
+    resource: '../src/Controller/Api/VoiceController.php'
+    type: annotation
+
 api.app_user:
     prefix: /v1/app_user
     resource: '../src/Controller/Api/AppUserController.php'
