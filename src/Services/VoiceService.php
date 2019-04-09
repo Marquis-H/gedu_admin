@@ -73,7 +73,7 @@ class VoiceService
 		try {
 			$voice->setName($accessor->getValue($data, '[name]'));
 			$voice->setUrl($accessor->getValue($data, '[url]'));
-			$voice->setTab($accessor->getValue($data, '[tav]'));
+			$voice->setTab($accessor->getValue($data, '[tab]'));
 
 			//保存校区
 			$voiceCatId = $accessor->getValue($data, '[catId]');
