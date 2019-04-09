@@ -18,38 +18,24 @@
       highlight-current-row
       style="width:100%"
     >
-      <el-table-column :label="$t('table.photo')" align="center" width="120">
+      <el-table-column label="名称" align="center">
         <template slot-scope="scope">
-          <img width="100%" :src="setting.domain+scope.row.photo">
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.slug')" align="center" width="120">
+      <el-table-column label="Url" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.slug">{{scope.row.slug}}</span>
-          <span v-else>-</span>
+          <span>{{scope.row.url}}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.onlineAt')" align="center" min-width="150">
+      <el-table-column label="Tab" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.onlineAt">{{scope.row.onlineAt}}</span>
-          <span v-else>-</span>
+          <span>{{scope.row.tab}}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.offlineAt')" align="center" min-width="150">
+      <el-table-column label="类别" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.offlineAt">{{scope.row.offlineAt}}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('table.position')" align="center" min-width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.position}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('table.campus')" align="center" min-width="150">
-        <template slot-scope="scope">
-          <span v-if="scope.row.campus">{{scope.row.campus}}</span>
-          <span v-else>-</span>
+          <span>{{scope.row.cat}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -109,37 +95,19 @@
         label-width="80px"
         style="width: 80%; margin-left:50px;"
       >
-        <el-form-item :label="$t('table.photo')" prop="photo">
-          <Upload v-model="image" :value="temp.photo" @value="updateValue"/>
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="temp.name"/>
         </el-form-item>
-        <el-form-item :label="$t('table.slug')" prop="slug">
-          <el-input v-model="temp.slug"/>
+        <el-form-item label="Url" prop="url">
+          <el-input v-model="temp.url"/>
         </el-form-item>
-        <el-form-item :label="$t('table.onlineAt')" prop="onlineAt">
-          <el-date-picker
-            v-model="temp.onlineAt"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
+        <el-form-item label="Tab" prop="tab">
+          <el-input v-model="temp.tab"/>
         </el-form-item>
-        <el-form-item :label="$t('table.offlineAt')" prop="offlineAt">
-          <el-date-picker
-            v-model="temp.offlineAt"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
-          />
-        </el-form-item>
-        <el-form-item :label="$t('table.position')" prop="position">
-          <el-input v-model="temp.position" type="number"/>
-        </el-form-item>
-        <el-form-item :label="$t('table.campus')" prop="campusId">
-          <el-select v-model="temp.campusId" placeholder="请选择">
+        <el-form-item label="类别" prop="catId">
+          <el-select v-model="temp.catId" placeholder="请选择">
             <el-option
-              v-for="(item, index) in campus"
+              v-for="(item, index) in VoiceCat"
               :key="index"
               :label="item.label"
               :value="item.value"
@@ -160,22 +128,19 @@
 
 <script>
 import waves from "../../directive/waves";
-import Upload from "@/components/Upload/singleImage2";
 import {
-  getBannerList,
-  createBanner,
-  updateBanner,
-  deleteBanner
-} from "@/api/banner";
-import { itemsCampus } from "@/api/campus";
-import { mapGetters } from "vuex";
+  getVoiceList,
+  createVoice,
+  updateVoice,
+  deleteVoice
+} from "@/api/voice";
+import { itemsVoiceCat } from "@/api/voice";
 
 export default {
-  name: "Banner",
+  name: "Voice",
   directives: {
     waves
   },
-  components: { Upload },
   data() {
     return {
       tableKey: 0,
@@ -194,13 +159,12 @@ export default {
       ],
       image: "",
       temp: {
-        photo: "",
-        onlineAt: "",
-        offlineAt: "",
-        position: 0,
-        campusId: ""
+        name: "",
+        url: "",
+        tab: "",
+        catId: ""
       },
-      campus: [],
+      VoiceCat: [],
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -208,27 +172,38 @@ export default {
         create: this.$t("table.add")
       },
       rules: {
-        photo: [
+        name: [
           {
             required: true,
             message: this.$t("table.required"),
             trigger: "change"
           }
         ],
+        url: [
+          {
+            required: true,
+            message: this.$t("table.required"),
+            trigger: "change"
+          }
+        ],
+        catId: [
+          {
+            required: true,
+            message: this.$t("table.required"),
+            trigger: "change"
+          }
+        ]
       }
     };
   },
   created() {
     this.getList();
-    this.getCampus();
-  },
-  computed: {
-    ...mapGetters(["setting"])
+    this.getVoiceCat();
   },
   methods: {
     getList() {
       this.listLoading = true;
-      getBannerList(this.listQuery).then(res => {
+      getVoiceList(this.listQuery).then(res => {
         this.list = res.data.items;
         this.total = res.data.pagination.total;
 
@@ -236,23 +211,18 @@ export default {
       });
     },
     // 校区
-    getCampus() {
-      itemsCampus().then(res => {
-        this.campus = res.data;
+    getVoiceCat() {
+      itemsVoiceCat().then(res => {
+        this.VoiceCat = res.data;
       });
-    },
-    //upload
-    updateValue(value) {
-      this.temp.photo = value;
     },
     //重置表单
     resetTemp() {
       this.temp = {
-        photo: "",
-        slug: "",
-        onlineAt: "",
-        offlineAt: "",
-        position: 0
+        name: "",
+        url: "",
+        tab: "",
+        catId: ""
       };
     },
     //新增
@@ -268,7 +238,7 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          createBanner(this.temp).then(res => {
+          createVoice(this.temp).then(res => {
             if (res.code == 100) {
               var message = res.data;
               this.showErrorMessage(message);
@@ -290,7 +260,6 @@ export default {
     //更新
     handleUpdate(row) {
       this.temp = Object.assign({}, row);
-      this.image = this.setting.domain + row.photo;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -302,7 +271,7 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
-          updateBanner(tempData).then(res => {
+          updateVoice(tempData).then(res => {
             if (res.code == 100) {
               var message = res.data;
               this.showErrorMessage(message);
@@ -310,7 +279,7 @@ export default {
               for (const v of this.list) {
                 if (v.id === this.temp.id) {
                   const index = this.list.indexOf(v);
-                  this.temp.campus = res.data.campus;
+                  this.temp.cat = res.data.cat;
                   this.list.splice(index, 1, this.temp);
                   break;
                 }
@@ -335,7 +304,7 @@ export default {
         type: "success",
         duration: 2000
       });
-      deleteBanner({ id: row.id }).then(() => {
+      deleteVoice({ id: row.id }).then(() => {
         const index = this.list.indexOf(row);
         this.list.splice(index, 1);
         this.total = this.total - 1;

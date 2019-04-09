@@ -134,6 +134,30 @@ export const constantRouterMap = [
                 meta: { title: 'word', icon: 'excel', noCache: true }
             }
         ]
+    },
+    {
+        path: '/voice',
+        component: Layout,
+        redirect: '/voice/index',
+        name: 'Voice',
+        meta: {
+            title: 'voice',
+            icon: 'message'
+        },
+        children: [
+            {
+                path: 'cat',
+                component: () => import('@/views/voice/cat'),
+                name: 'VoiceCat',
+                meta: { title: 'voiceCat' }
+            },
+            {
+                path: 'index',
+                component: () => import('@/views/voice/index'),
+                name: 'VoiceIndex',
+                meta: { title: 'voice'}
+            }
+        ]
     }
 ]
 

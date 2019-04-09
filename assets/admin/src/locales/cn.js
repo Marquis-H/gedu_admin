@@ -98,5 +98,9 @@ export default {
     "table.annotation": '注解',
     "table.tabs": '标签',
     "table.extra": '额外信息',
-    "table.slug": "标识"
+    "table.slug": "标识",
+    "route.voice": "音频",
+    "route.voiceCat": "音频类别",
+    "table.voice_cat_unique": "音频已存在",
+    "table.content_cat_unique": "内容已存在"
 };
