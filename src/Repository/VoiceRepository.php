@@ -32,7 +32,7 @@ class VoiceRepository extends ServiceEntityRepository
 			->select('q')
 			->leftJoin('q.VoiceCategory', 'v')
 			->orderBy('v.id', 'asc')
-			->orderBy('q.id', 'asc')
+			->addOrderBy('q.id', 'asc')
 			->getQuery()
 			->getResult();
 	}
