@@ -160,7 +160,7 @@ class VoiceService
 		 * @var Voice $value
 		 */
 		foreach ($voices as $key => $value) {
-			if ($value->getId() === $id) {
+			if ($value->getId() == $id) {
 				/** @var Voice $preData */
 				$preData = $accessor->getValue($voices, '[' . ($key - 1) . ']');
 				if ($preData) {
