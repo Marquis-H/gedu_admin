@@ -121,9 +121,11 @@ class VoiceService
 					array_push($cat['data'], [
 						'title' => $voice->getTab(),
 						'section' => [
-							'id' => $voice->getId(),
-							'title' => $voice->getName(),
-							'url' => $voice->getUrl()
+							[
+								'id' => $voice->getId(),
+								'title' => $voice->getName(),
+								'url' => $voice->getUrl()
+							]
 						]
 					]);
 				}
