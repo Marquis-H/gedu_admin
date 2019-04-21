@@ -93,6 +93,11 @@ api.app_word:
     resource: '../src/Controller/App/WordApiController.php'
     type: annotation
 
+api.app_voice:
+    prefix: /api/app/voice
+    resource: '../src/Controller/App/VoiceApiController.php'
+    type: annotation
+
 api.app_profile:
     prefix: /api/app/profile
     resource: '../src/Controller/App/ProfileApiController.php'

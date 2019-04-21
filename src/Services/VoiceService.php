@@ -89,4 +89,85 @@ class VoiceService
 			throw new \LogicException();
 		}
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getList()
+	{
+		$em = $this->container->get('doctrine.orm.default_entity_manager');
+		$cats = $em->getRepository('Admin:VoiceCategory')->findBy([], ['name' => 'desc']);
+
+		$data = [];
+		foreach ($cats as $cat) {
+			$voices = $cat->getVoices()->getValues();
+			$cat = [
+				'id' => $cat->getId(),
+				'title' => $cat->getName(),
+				'data' => []
+			];
+			/** @var Voice $voice */
+			foreach ($voices as $voice) {
+				if (!empty($cat['data'])) {
+					$title = $cat['data']['title'];
+					if ($title == $voice->getTab()) {
+						array_push($cat['data']['section'], [
+							'id' => $voice->getId(),
+							'title' => $voice->getName(),
+							'url' => $voice->getUrl()
+						]);
+					}
+				} else {
+					array_push($cat['data'], [
+						'title' => $voice->getName(),
+						'section' => [
+							'id' => $voice->getId(),
+							'title' => $voice->getName(),
+							'url' => $voice->getUrl()
+						]
+					]);
+				}
+			}
+			array_push($data, $cat);
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * @param $id
+	 * @return array
+	 */
+	public function detail($id)
+	{
+		$accessor = PropertyAccess::createPropertyAccessor();
+		$em = $this->container->get('doctrine.orm.default_entity_manager');
+		$voice = $em->getRepository('Admin:Voice')->findOneBy(['id' => $id]);
+		$voices = $em->getRepository('Admin:Voice')->findBy([], ['VoiceCategory' => 'desc', 'tab' => 'asc']);
+
+		$pre = null;
+		$next = null;
+		foreach ($voices as $key => $value) {
+			if ($value->getId() === $id) {
+				/** @var Voice $preData */
+				$preData = $accessor->getValue($voices, '[' . ($key - 1) . ']');
+				if ($preData) {
+					$pre = $preData->getId();
+				}
+				/** @var Voice $nextData */
+				$nextData = $accessor->getValue($voices, '[' . ($key + 1) . ']');
+				if ($nextData) {
+					$next = $nextData->getId();
+				}
+			}
+		}
+		return [
+			'title' => $voice->getTab() . ' - ' . $voice->getName(),
+			'voice' => $voice->getUrl(),
+			'translation' => $voice->getTranslation(),
+			'pre' => $pre,
+			'next' => $next
+		];
+	}
 }
