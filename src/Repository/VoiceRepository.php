@@ -14,37 +14,26 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class VoiceRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Voice::class);
-    }
+	/**
+	 * VoiceRepository constructor.
+	 * @param RegistryInterface $registry
+	 */
+	public function __construct(RegistryInterface $registry)
+	{
+		parent::__construct($registry, Voice::class);
+	}
 
-//    /**
-//     * @return Voice[] Returns an array of Voice objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Voice
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+	/**
+	 * @return mixed
+	 */
+	public function findByCat()
+	{
+		return $this->createQueryBuilder('q')
+			->select('q')
+			->leftJoin('q.VoiceCategory', 'v')
+			->orderBy('v.id', 'asc')
+			->orderBy('q.id', 'asc')
+			->getQuery()
+			->getResult();
+	}
 }
