@@ -95,6 +95,7 @@ class VoiceService
 	 */
 	public function getList()
 	{
+		$accessor = PropertyAccess::createPropertyAccessor();
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$cats = $em->getRepository('Admin:VoiceCategory')->findBy([], ['id' => 'asc']);
 
@@ -108,17 +109,15 @@ class VoiceService
 			];
 			/** @var Voice $voice */
 			foreach ($voices as $voice) {
-				if (!empty($cat['data'])) {
-					$title = $cat['data']['title'];
-					if ($title == $voice->getTab()) {
-						array_push($cat['data']['section'], [
-							'id' => $voice->getId(),
-							'title' => $voice->getName(),
-							'url' => $voice->getUrl()
-						]);
-					}
+				$tab = $accessor->getValue($cat['data'], '[' . $voice->getTab() . ']');
+				if ($tab) {
+					array_push($cat['data'][$voice->getTab()]['section'], [
+						'id' => $voice->getId(),
+						'title' => $voice->getName(),
+						'url' => $voice->getUrl()
+					]);
 				} else {
-					array_push($cat['data'], [
+					$cat['data'][$voice->getTab()] = [
 						'title' => $voice->getTab(),
 						'section' => [
 							[
@@ -127,9 +126,15 @@ class VoiceService
 								'url' => $voice->getUrl()
 							]
 						]
-					]);
+					];
 				}
 			}
+			$voiceData = [];
+			foreach ($cat['data'] as $v) {
+				array_push($voiceData, $v);
+			}
+			$cat['data'] = $voiceData;
+
 			array_push($data, $cat);
 		}
 
