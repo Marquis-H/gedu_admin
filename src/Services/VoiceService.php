@@ -96,7 +96,7 @@ class VoiceService
 	public function getList()
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
-		$cats = $em->getRepository('Admin:VoiceCategory')->findBy([], ['name' => 'desc']);
+		$cats = $em->getRepository('Admin:VoiceCategory')->findBy([], ['id' => 'asc']);
 
 		$data = [];
 		foreach ($cats as $cat) {
@@ -119,7 +119,7 @@ class VoiceService
 					}
 				} else {
 					array_push($cat['data'], [
-						'title' => $voice->getName(),
+						'title' => $voice->getTab(),
 						'section' => [
 							'id' => $voice->getId(),
 							'title' => $voice->getName(),
