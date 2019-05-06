@@ -97,7 +97,7 @@ class VoiceService
 	{
 		$accessor = PropertyAccess::createPropertyAccessor();
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
-		$cats = $em->getRepository('Admin:VoiceCategory')->findBy([], ['id' => 'asc', 'name' => 'desc']);
+		$cats = $em->getRepository('Admin:VoiceCategory')->findBy([], ['name' => 'desc', 'id' => 'asc']);
 
 		$data = [];
 		foreach ($cats as $cat) {
