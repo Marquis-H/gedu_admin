@@ -99,8 +99,8 @@ class VoiceService
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$cats = $em->getRepository('Admin:VoiceCategory')->createQueryBuilder('q')
 			->select('q')
-			->orderBy('LENGTH(q.name)', 'desc')
-			->addOrderBy('q.name', 'desc')
+			->orderBy('LENGTH(q.name)', 'asc')
+			->addOrderBy('q.name', 'asc')
 			->getQuery()
 			->getResult();
 
