@@ -100,6 +100,7 @@ class VoiceService
 		$cats = $em->getRepository('Admin:VoiceCategory')->createQueryBuilder('q')
 			->select('q')
 			->orderBy('LENGTH(q.name)', 'desc')
+			->addOrderBy('q.name', 'desc')
 			->getQuery()
 			->getResult();
 
