@@ -173,6 +173,9 @@
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
     },
+    "phpoffice/phpexcel": {
+        "version": "dev-master"
+    },
     "predis/predis": {
         "version": "v1.1.x-dev"
     },
