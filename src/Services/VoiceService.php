@@ -183,6 +183,7 @@ class VoiceService
 			'title' => $voice->getTab() . ' - ' . $voice->getName(),
 			'voice' => $voice->getUrl(),
 			'translation' => $voice->getTranslation(),
+			'isCn' => $accessor->getValue($voice->getTranslation(), '[0][cntext]'),
 			'pre' => $pre,
 			'next' => $next
 		];
