@@ -95,6 +95,8 @@ class VoiceService
 							'end' => ''
 						]
 					]);
+				} else if (!$translation) {
+					$voice->setTranslation([]);
 				} else {
 					$voice->setTranslation(unserialize($translation));
 				}
