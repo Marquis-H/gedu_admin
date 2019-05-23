@@ -67,7 +67,7 @@ class VoiceController extends AbstractApiController
 				'tab' => $item->getTab(),
 				'cat' => $item->getVoiceCategory() ? $item->getVoiceCategory()->getName() : '-',
 				'catId' => $item->getVoiceCategory() ? $item->getVoiceCategory()->getId() : '',
-				'translation' => $item->getTranslation(),
+				'translation' => serialize($item->getTranslation()),
 				'del' => false
 			]);
 		}
