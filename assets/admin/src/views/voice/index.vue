@@ -104,6 +104,9 @@
         <el-form-item label="Tab" prop="tab">
           <el-input v-model="temp.tab"/>
         </el-form-item>
+        <el-form-item label="翻译" prop="translation">
+          <el-input v-model="temp.translation" type="textarea" :autosize="{ minRows: 8, maxRows: 8}"/>
+        </el-form-item>
         <el-form-item label="类别" prop="catId">
           <el-select v-model="temp.catId" placeholder="请选择">
             <el-option
@@ -162,7 +165,8 @@ export default {
         name: "",
         url: "",
         tab: "",
-        catId: ""
+        catId: "",
+        translation: ""
       },
       VoiceCat: [],
       dialogFormVisible: false,
@@ -222,7 +226,8 @@ export default {
         name: "",
         url: "",
         tab: "",
-        catId: ""
+        catId: "",
+        translation: ""
       };
     },
     //新增
