@@ -105,7 +105,12 @@
           <el-input v-model="temp.tab"/>
         </el-form-item>
         <el-form-item label="翻译" prop="translation">
-          <el-input v-model="temp.translation" type="textarea" :autosize="{ minRows: 8, maxRows: 8}"/>
+          <el-input
+            v-model="temp.translation"
+            type="textarea"
+            :autosize="{ minRows: 8, maxRows: 8}"
+          />
+          <el-alert title="只支持添加原文" type="success" style="margin-top:5px;padding:0"></el-alert>
         </el-form-item>
         <el-form-item label="类别" prop="catId">
           <el-select v-model="temp.catId" placeholder="请选择">
