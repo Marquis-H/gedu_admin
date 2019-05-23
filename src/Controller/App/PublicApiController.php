@@ -175,7 +175,15 @@ class PublicApiController extends AbstractAppController
 				if ($user) {
 					$campus = $user->getCampus();
 					if ($campus->getId() === $content->getCampus()->getId()) {
-						$phone = explode(',', $campus->getInfomation());
+						$titlePhone = explode(',', $campus->getInfomation());
+						$phone = [];
+						foreach ($titlePhone as $value) {
+							$tp = explode('|', $value);
+							array_push($phone, [
+								'title' => count($tp) == 2 ? $tp[0] : '',
+								'phone' => count($tp) == 2 ? $tp[1] : $tp[0],
+							]);
+						}
 						array_push($contentData, [
 							'id' => $content->getId(),
 							'title' => $content->getTitle(),
