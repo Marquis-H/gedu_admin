@@ -63,9 +63,10 @@ class VoiceService
 	 *
 	 * @param Voice $voice
 	 * @param $data
+	 * @param $isNew
 	 * @return Voice
 	 */
-	public function save(Voice $voice, $data)
+	public function save(Voice $voice, $data, $isNew = false)
 	{
 		$em = $this->container->get('doctrine.orm.default_entity_manager');
 		$accessor = PropertyAccess::createPropertyAccessor();
@@ -74,6 +75,30 @@ class VoiceService
 			$voice->setName($accessor->getValue($data, '[name]'));
 			$voice->setUrl($accessor->getValue($data, '[url]'));
 			$voice->setTab($accessor->getValue($data, '[tab]'));
+			$translation = $accessor->getValue($data, '[translation]');
+			if ($isNew) {
+				$voice->setTranslation($translation ? [
+					[
+						'cntext' => '',
+						'entext' => $translation,
+						'start' => '',
+						'end' => ''
+					]
+				] : []);
+			} else {
+				if (empty($voice->getTranslation()) && $translation && $translation != 'a:0:{}') {
+					$voice->setTranslation([
+						[
+							'cntext' => '',
+							'entext' => $translation,
+							'start' => '',
+							'end' => ''
+						]
+					]);
+				} else {
+					$voice->setTranslation($translation);
+				}
+			}
 
 			//保存校区
 			$voiceCatId = $accessor->getValue($data, '[catId]');

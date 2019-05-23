@@ -67,6 +67,7 @@ class VoiceController extends AbstractApiController
 				'tab' => $item->getTab(),
 				'cat' => $item->getVoiceCategory() ? $item->getVoiceCategory()->getName() : '-',
 				'catId' => $item->getVoiceCategory() ? $item->getVoiceCategory()->getId() : '',
+				'translation' => $item->getTranslation(),
 				'del' => false
 			]);
 		}
@@ -98,6 +99,7 @@ class VoiceController extends AbstractApiController
 			'catId' => [
 				new NotBlank()
 			],
+			'translation' => [],
 			'url' => [],
 			'tab' => []
 		]);
@@ -110,7 +112,7 @@ class VoiceController extends AbstractApiController
 			try {
 				$voice = new Voice();
 				/** @var Voice $voice */
-				$voice = $VoiceService->save($voice, $data);
+				$voice = $VoiceService->save($voice, $data, true);
 
 				$data['id'] = $voice->getId();
 				$data['cat'] = $voice->getVoiceCategory() ? $voice->getVoiceCategory()->getName() : '-';
@@ -152,6 +154,7 @@ class VoiceController extends AbstractApiController
 				'catId' => [
 					new NotBlank()
 				],
+				'translation' => [],
 				'url' => [],
 				'tab' => []
 			]
