@@ -177,8 +177,8 @@ class PublicApiController extends AbstractAppController
 					if ($campus->getId() === $content->getCampus()->getId()) {
 						$titlePhone = explode(',', $campus->getInfomation());
 						$phone = [];
-						foreach ($titlePhone as $value) {
-							$tp = explode('|', $value);
+						foreach ($titlePhone as $v) {
+							$tp = explode('|', $v);
 							array_push($phone, [
 								'title' => count($tp) == 2 ? $tp[0] : '',
 								'phone' => count($tp) == 2 ? $tp[1] : $tp[0],
