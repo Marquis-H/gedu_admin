@@ -137,7 +137,9 @@ class WordService
 				$newWords = [];
 				$i = $meWordNum;
 				while ($i < ($this->newWordNum + $meWordNum)) {
-					array_push($newWords, $allWord[$i]);
+					if($allWord[$i]){
+						array_push($newWords, $allWord[$i]);
+					}
 					$i++;
 				}
 				$wordUser->setNewWord($newWords);
