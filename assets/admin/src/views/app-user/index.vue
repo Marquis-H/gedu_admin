@@ -57,7 +57,7 @@
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="微信头像">
               <span v-if="scope.row.avatar">
-                <img :src="scope.row.avatar">
+                <img :src="scope.row.avatar" />
               </span>
               <span v-else>-</span>
             </el-form-item>
@@ -97,23 +97,33 @@
           <span>{{scope.row.integral}}</span>
         </template>
       </el-table-column>
+      <el-table-column label="剩余单词" align="center" min-width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.word == null">{{scope.row.word}}</span>
+          <div v-else v-for="(item, index) in scope.row.word" :key="item.id">
+            <span>{{item.total}}</span>
+            <span>{{item.type}}</span>
+            <el-button size="mini" round @click="addword(item)">新增</el-button>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('table.enable')" align="center" width="120">
         <template slot-scope="scope">
           <span v-if="scope.row.isEnable">
-            <svg-icon icon-class="yes" style="fill: #409EFF"/>
+            <svg-icon icon-class="yes" style="fill: #409EFF" />
           </span>
           <span v-else>
-            <svg-icon icon-class="close" style="fill: #f56c6c"/>
+            <svg-icon icon-class="close" style="fill: #f56c6c" />
           </span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.isMember')" align="center" width="160">
         <template slot-scope="scope">
           <span v-if="scope.row.isMember">
-            <svg-icon icon-class="yes" style="fill: #409EFF"/>
+            <svg-icon icon-class="yes" style="fill: #409EFF" />
           </span>
           <span v-else>
-            <svg-icon icon-class="close" style="fill: #f56c6c"/>
+            <svg-icon icon-class="close" style="fill: #f56c6c" />
           </span>
         </template>
       </el-table-column>
@@ -182,7 +192,7 @@
         <el-alert :title="'当前积分：'+tempIntegral.integral" :closable="false" type="success"></el-alert>
         <p></p>
         <el-form-item label="扣除积分" prop="reduceIntegral">
-          <el-input v-model="tempIntegral.reduceIntegral" type="number"/>
+          <el-input v-model="tempIntegral.reduceIntegral" type="number" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -206,7 +216,7 @@
           <el-checkbox v-model="temp.isMember">{{$t('table.isMember')}}</el-checkbox>
         </el-form-item>
         <el-form-item :label="$t('table.name')" prop="name">
-          <el-input v-model="temp.name"/>
+          <el-input v-model="temp.name" />
         </el-form-item>
         <el-form-item :label="$t('table.gender')" prop="gender">
           <el-radio v-model="temp.gender" label="男">男</el-radio>
@@ -222,7 +232,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('table.phone')" prop="phone">
-          <el-input v-model="temp.phone"/>
+          <el-input v-model="temp.phone" />
         </el-form-item>
         <el-form-item :label="$t('table.campus')" prop="campusId">
           <el-select v-model="temp.campusId" placeholder="请选择">
@@ -255,6 +265,7 @@ import {
   updateIntegral
 } from "@/api/appUser";
 import { itemsCampus } from "@/api/campus";
+import { addWord } from "@/api/word";
 
 export default {
   name: "AppUser",
@@ -507,6 +518,39 @@ export default {
         message: newMessage.join("，"),
         type: "error"
       });
+    },
+    addword(word) {
+      this.$confirm(
+        "此操作将无法修改, 是否继续?",
+        "新增一组" + word.type + "单词",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          addWord({ id: word.id }).then(res => {
+            if (res.code == 0) {
+              word.total = word.total + res.data;
+              this.$message({
+                type: "success",
+                message: "新增成功!"
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: res.message
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     }
   }
 };

@@ -15,3 +15,11 @@ export function getWordList(params = {}) {
 export function updateWordTabs(params = {}) {
     return $request.post('/v1/word/update_tabs', params)
 }
+
+/**
+ * 新增一组单词
+ * @param {*} params 
+ */
+export function addWord(params = {}) {
+    return $request.post('/v1/word/add_word', params)
+}

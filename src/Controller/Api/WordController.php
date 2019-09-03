@@ -132,4 +132,38 @@ class WordController extends AbstractApiController
 
 		return self::createSuccessJSONResponse($data, 'success');
 	}
+
+
+	/**
+	 * 新增一组单词
+	 *
+	 * @Route("/add_word", name="app.word.add_word")
+	 * @Method({"POST"})
+	 *
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\JsonResponse
+	 */
+	public function addWord(Request $request)
+	{
+		$accessor = PropertyAccess::createPropertyAccessor();
+		$id = $accessor->getValue($request->request->all(), '[id]');
+		$em = $this->get('doctrine.orm.default_entity_manager');
+		$wordUser = $em->getRepository('Admin:WordUser')->findOneBy(['id' => $id]);
+
+		if ($wordUser === null) {
+			return self::createFailureJSONResponse('更新失败');
+		}
+
+		$wordService = $this->get('admin.service.word');
+		$newWord = $wordService->getWord($wordUser->getType());
+		$wordUser->setAllWord(array_merge($wordUser->getAllWord(), $newWord));
+		try {
+			$em->persist($wordUser);
+			$em->flush();
+		} catch (\Exception $e) {
+			return self::createFailureJSONResponse('更新失败');
+		}
+
+		return self::createSuccessJSONResponse(count($newWord));
+	}
 }

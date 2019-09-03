@@ -65,9 +65,21 @@ class AppUserController extends AbstractApiController
 
 		$paginationResult = self::pagination($request, $queryBuilder);
 		$items = [];
+		$wordUserRepo = $em->getRepository('Admin:WordUser');
 		/** @var User $item */
 		foreach ($paginationResult['items'] as $item) {
 			$isBindWechat = $item->getWechatBinding();
+			// 获取剩余单词个数
+			$words = $wordUserRepo->findBy(['User' => $item]);
+			$wordData = [];
+			foreach ($words as $word) {
+				$total = count($word->getAllWord()) - count($word->getMeWord()) + count($word->getSurplusWord());
+				array_push($wordData, [
+					'id' => $word->getId(),
+					'total' => $total,
+					'type' => $word->getType()
+				]);
+			}
 			array_push($items, [
 				'id' => $item->getId(),
 				'name' => $item->getName(),
@@ -84,6 +96,7 @@ class AppUserController extends AbstractApiController
 				'nickname' => $item->getNickname() ? $item->getNickname() : '-',
 				'avatar' => $item->getAvatar() ? $item->getAvatar() : null,
 				'isBindWechat' => $isBindWechat,
+				'word' => empty($wordData) ? null : $wordData,
 				'del' => false
 			]);
 		}
@@ -152,6 +165,7 @@ class AppUserController extends AbstractApiController
 				$data['avatar'] = null;
 				$data['isBindWechat'] = (bool)$user->getIsMember();
 				$data['integral'] = $user->getIntegral();
+				$data['word'] = null;
 				$data['del'] = false;
 			} catch (\Exception $e) {
 				return self::createFailureJSONResponse('fail');
@@ -175,6 +189,7 @@ class AppUserController extends AbstractApiController
 		$em = $this->get('doctrine.orm.default_entity_manager');
 		$userRepo = $em->getRepository('Admin:User');
 		$id = $accessor->getValue($data, '[id]');
+		$word = $data['word'];
 		unset($data['id']);
 		unset($data['campus']);
 		unset($data['createdAt']);
@@ -182,6 +197,7 @@ class AppUserController extends AbstractApiController
 		unset($data['avatar']);
 		unset($data['isBindWechat']);
 		unset($data['integral']);
+		unset($data['word']);
 		unset($data['del']);
 
 		$validator = $this->get('validator');
@@ -229,6 +245,7 @@ class AppUserController extends AbstractApiController
 				$data['avatar'] = null;
 				$data['isBindWechat'] = (bool)$user->getIsMember();
 				$data['integral'] = $user->getIntegral();
+				$data['word'] = $word;
 				$data['del'] = false;
 
 			} catch (\Exception $e) {
